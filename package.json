@@ -1,0 +1,15 @@
+{
+  "name": "part1",
+  "version": "1.0.0",
+  "description": "node app ",
+  "main": "Part1.js",
+  "scripts": {
+    "start": "node Part2.js"
+  },
+  "author": "Toki Eashir",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "mongodb": "4.0"
+  }
+}

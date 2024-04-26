@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Ticker App</title>
+    <Style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        form {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="radio"] {
+            margin-left: 10px;
+            margin-bottom: 70px;
+        }
+
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        #results {
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            background-color: #ffffff;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.3);
+            width: 30%;
+            margin: 0 auto;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+    </Style>
+</head>
+
+<body>
+    <h1 class="header">Stock Search</h1>
+    <div> 
+    <form action="/process" method="GET" id="searchForm">
+        <input type="text" name="query" placeholder="Enter stock ticker or company name">
+        <input type="radio" name="searchType" value="ticker" checked> Ticker
+        <input type="radio" name="searchType" value="company"> Company Name
+        <button type="submit">Search</button>
+    </form>
+    </div>
+    
+    <div id="results" style="display: none;"></div>
+
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            const query = formData.get('query');
+            const searchType = formData.get('searchType');
+
+            try {
+            const response = await fetch(`/process?query=${query}&searchType=${searchType}`);
+            const data = await response.json();
+            displayResults(data);
+            } catch (error) {
+            console.error('Error fetching data:', error);
+            }
+        });
+
+        function displayResults(data) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+
+            if (data.length === 0) {
+            resultsDiv.textContent = 'No results found';
+            return;
+            }
+
+            const ul = document.createElement('ul');
+            data.forEach(company => {
+            const li = document.createElement('li');
+            li.textContent = `${company.name} (${company.ticker}): $${company.price}`;
+            ul.appendChild(li);
+            });
+            resultsDiv.appendChild(ul);
+            resultsDiv.style.display = 'block';
+        }
+
+
+    </script>
+</body>
+</html>
